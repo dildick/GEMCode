@@ -1,6 +1,7 @@
 #ifndef GEMValidation_TFTrack_h
 #define GEMValidation_TFTrack_h
 
+/*
 #include "GEMCode/GEMValidation/src/BaseMatcher.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/L1Trigger/interface/L1MuonParticleFwd.h"
@@ -94,9 +95,14 @@
 #include "CondFormats/L1TObjects/interface/L1MuTriggerScales.h"
 #include "CondFormats/L1TObjects/interface/L1MuTriggerPtScale.h"
 
+#include "GEMCode/GEMValidation/src/GenericDigi.h"
+
+
 #include <vector>
 #include <tuple>
 #include <iostream>
+
+*/
 
 class TFTrack
 {
@@ -108,17 +114,17 @@ class TFTrack
   /// destructor
   ~TFTrack();  
 
+  /*
   /// L1 track
-  const csc::L1Track* getL1Track() const {return l1track_;}
+  //  const csc::L1Track* getL1Track() const {return l1track_;}
   /// collection of trigger digis
-  std::vector<const CSCCorrelatedLCTDigi* >& 
-    getTriggerDigis() const {return return triggerDigis_;} 
+  const std::vector<const CSCCorrelatedLCTDigi* >& getTriggerDigis() const {return triggerDigis_;} 
   /// collection of MPC LCTs
-  std::vector <CSCDetId> getTriggerDigisIds();
-  std::vector <std::pair<float, float>> getTriggerEtaPhis();
-  std::vector <csctf::TrackStub> getTriggerStubs;
-  std::vector <Digi*> mplcts getTriggerMPLCTs();
-  std::vector <CSCDetId> getChamberIds; // chamber ids
+  const std::vector<CSCDetId>& getTriggerDigisIds() const {return triggerIds_;}
+  const std::vector<std::pair<float, float>>& getTriggerEtaPhis() {return triggerEtaPhis_;}
+  const std::vector<csctf::TrackStub>& getTriggerStubs() const {return triggerStubs_;}
+  const std::vector<Digi*>& getTriggerMPLCTs() const {return mplcts_;}
+  const std::vector<CSCDetId>& getChamberIds() const {return ids_;}
   
   /// track sign
   bool sign() const {return l1track_->sign();}
@@ -145,25 +151,28 @@ class TFTrack
   double dr() const {return dr_;}
   std::vector<bool> deltaOk();
   bool debug() const {return debug_;}
+  */
 
  private:
+  /*
   const csc::L1Track* l1track_;
-    std::vector < const CSCCorrelatedLCTDigi * > trgdigis;
-    std::vector < CSCDetId > trgids;
-    std::vector < std::pair<float, float> > trgetaphis;
-    std::vector < csctf::TrackStub > trgstubs;
-    std::vector < Digi* > mplcts;
-    std::vector < CSCDetId > ids; // chamber ids
-    unsigned phi_packed_;
-    unsigned eta_packed_;
-    unsigned pt_packed_;
-    unsigned q_packed_;
-    double phi_;
-    double eta_;
-    double pt_;
-    double dr_;
-    std::vector<bool> deltaOk_;
-    bool debug_;
+  std::vector<const CSCCorrelatedLCTDigi*> triggerDigis_;
+  std::vector<CSCDetId> triggerIds_;
+  std::vector<std::pair<float, float>> triggerEtaPhis_;
+  std::vector<csctf::TrackStub> triggerStubs_;
+  std::vector<Digi*> mplcts_;
+  std::vector<CSCDetId> ids_; // chamber ids
+  unsigned phi_packed_;
+  unsigned eta_packed_;
+  unsigned pt_packed_;
+  unsigned q_packed_;
+  double phi_;
+  double eta_;
+  double pt_;
+  double dr_;
+  std::vector<bool> deltaOk_;
+  bool debug_;
+  */
 };
 
 #endif
