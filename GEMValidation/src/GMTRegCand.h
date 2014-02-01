@@ -4,7 +4,11 @@
 class GMTRegCand : TFCand
 {
  public:
+  /// constructor
   GMTRegCand();
+  /// copy constructor
+  GMTRegCand(const GMTRegCand&);
+  /// destructor
   ~GMTRegCand();
 
   /*  

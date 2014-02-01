@@ -4,7 +4,11 @@
 class L1Extra : GMTCand
 {
  public:
+  /// constructor
   L1Extra();
+  /// copy constructor
+  L1Extra(const L1Extra&);
+  /// destructor
   ~L1Extra();
 
   /*  
