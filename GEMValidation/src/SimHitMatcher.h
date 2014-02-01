@@ -21,6 +21,7 @@
 
 class CSCGeometry;
 class GEMGeometry;
+class ME0Geometry;
 
 class SimHitMatcher : public BaseMatcher
 {
@@ -33,11 +34,15 @@ public:
 
   /// access to all the GEM SimHits
   const edm::PSimHitContainer& simHitsGEM() const {return gem_hits_;}
+  /// access to all the ME0 SimHits
+  const edm::PSimHitContainer& simHitsME0() const {return gem_hits_;}
   /// access to all the CSC SimHits
   const edm::PSimHitContainer& simHitsCSC() const {return csc_hits_;}
 
   /// GEM partitions' detIds with SimHits
   std::set<unsigned int> detIdsGEM() const;
+  /// ME0 partitions' detIds with SimHits
+  std::set<unsigned int> detIdsME0() const;
   /// CSC layers' detIds with SimHits
   /// by default, only returns those from ME1b
   std::set<unsigned int> detIdsCSC(int csc_type = CSC_ME1b) const;
@@ -45,9 +50,14 @@ public:
   /// GEM detid's with hits in 2 layers of coincidence pads
   /// those are layer==1 only detid's
   std::set<unsigned int> detIdsGEMCoincidences() const;
+  /// ME0 detid's with hits in 2 layers of coincidence pads
+  /// those are layer==1 only detid's
+  std::set<unsigned int> detIdsME0Coincidences(int min_n_layers = 2) const;
 
   /// GEM chamber detIds with SimHits
   std::set<unsigned int> chamberIdsGEM() const;
+  /// ME0 chamber detIds with SimHits
+  std::set<unsigned int> chamberIdsME0() const;
   /// CSC chamber detIds with SimHits
   std::set<unsigned int> chamberIdsCSC(int csc_type = CSC_ME1b) const;
 
@@ -56,7 +66,12 @@ public:
   /// GEM superchamber detIds with SimHits 2 layers of coincidence pads
   std::set<unsigned int> superChamberIdsGEMCoincidences() const;
 
-  /// simhits from a particular partition (GEM)/layer (CSC), chamber or superchamber
+  /// ME0 superchamber detIds with SimHits
+  std::set<unsigned int> superChamberIdsME0() const;
+  /// ME0 superchamber detIds with SimHits >=2 layers of coincidence pads
+  std::set<unsigned int> superChamberIdsME0Coincidences(int min_n_layers = 2) const;
+
+  /// simhits from a particular partition (GEM)/layer (CSC/ME0), chamber or superchamber
   const edm::PSimHitContainer& hitsInDetId(unsigned int) const;
   const edm::PSimHitContainer& hitsInChamber(unsigned int) const;
   const edm::PSimHitContainer& hitsInSuperChamber(unsigned int) const;
@@ -70,16 +85,19 @@ public:
   /// How many coincidence pads with simhits in GEM did this simtrack get?
   int nCoincidencePadsWithHits() const;
 
+  /// How many ME0 chambers with minimum number of layer with simhits did this simtrack get?
+  int nCoincidenceME0Chambers(int min_n_layers = 2) const;
+
   /// How many CSC chambers with minimum number of layer with simhits did this simtrack get?
   int nCoincidenceCSCChambers(int min_n_layers = 4) const;
 
   /// calculate Global average position for a provided collection of simhits
   GlobalPoint simHitsMeanPosition(const edm::PSimHitContainer& sim_hits) const;
 
-  /// calculate average strip (strip for GEM, half-strip for CSC) number for a provided collection of simhits
+  /// calculate average strip (strip for GEM/ME0, half-strip for CSC) number for a provided collection of simhits
   float simHitsMeanStrip(const edm::PSimHitContainer& sim_hits) const;
 
-  std::set<int> hitStripsInDetId(unsigned int, int margin_n_strips = 0) const;  // GEM or CSC
+  std::set<int> hitStripsInDetId(unsigned int, int margin_n_strips = 0) const;  // GEM/ME0 or CSC
   std::set<int> hitWiregroupsInDetId(unsigned int, int margin_n_wg = 0) const; // CSC
   std::set<int> hitPadsInDetId(unsigned int) const; // GEM
   std::set<int> hitCoPadsInDetId(unsigned int) const; // GEM coincidence pads with hits
@@ -99,12 +117,15 @@ private:
 
   bool simMuOnlyCSC_;
   bool simMuOnlyGEM_;
+  bool simMuOnlyME0_;
   bool discardEleHitsCSC_;
   bool discardEleHitsGEM_;
+  bool discardEleHitsME0_;
   std::string simInputLabel_;
 
   const CSCGeometry* csc_geo_;
   const GEMGeometry* gem_geo_;
+  const ME0Geometry* me0_geo_;
 
   std::map<unsigned int, unsigned int> trkid_to_index_;
 
@@ -119,14 +140,21 @@ private:
   std::map<unsigned int, edm::PSimHitContainer > gem_chamber_to_hits_;
   std::map<unsigned int, edm::PSimHitContainer > gem_superchamber_to_hits_;
 
+  edm::PSimHitContainer me0_hits_;
+  std::map<unsigned int, edm::PSimHitContainer > me0_detid_to_hits_;
+  std::map<unsigned int, edm::PSimHitContainer > me0_chamber_to_hits_;
+  std::map<unsigned int, edm::PSimHitContainer > me0_superchamber_to_hits_;
+
   // detids with hits in pads
   std::map<unsigned int, std::set<int> > gem_detids_to_pads_;
   // detids with hits in 2-layer pad coincidences
   std::map<unsigned int, std::set<int> > gem_detids_to_copads_;
 
   bool verboseGEM_;
+  bool verboseME0_;
   bool verboseCSC_;
   edm::InputTag gemSimHitInput_;
+  edm::InputTag me0SimHitInput_;
   edm::InputTag cscSimHitInput_;
 };
 

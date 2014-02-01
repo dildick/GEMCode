@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 SimTrackMatching = cms.PSet(
     # common
-    useCSCChamberTypes = cms.untracked.vint32(0,1,2),
+    useCSCChamberTypes = cms.untracked.vint32(0,1,2,3,4),
     ntupleTrackChamberDelta = cms.bool(True),
     ntupleTrackEff = cms.bool(True),
     overrideminNHitsChamber = cms.bool(False),
@@ -17,6 +17,12 @@ SimTrackMatching = cms.PSet(
         onlyMuon = cms.bool(True),
         requireVertex = cms.bool(True),
         requireGenPart = cms.bool(True),
+    ),
+    me0SimHit = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag('g4SimHits','MuonME0Hits'),
+        simMuOnly = cms.bool(True),
+        discardEleHits = cms.bool(True),
     ),
     gemSimHit = cms.PSet(
         verbose = cms.int32(0),
