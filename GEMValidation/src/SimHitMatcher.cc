@@ -6,6 +6,7 @@
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
 #include "Geometry/GEMGeometry/interface/ME0Geometry.h"
+#include "Geometry/RPCGeometry/interface/RPCGeometry.h"
 
 #include <algorithm>
 #include <iomanip>
@@ -32,6 +33,11 @@ bool is_csc(unsigned int detid)
   return id.subdetId() == MuonSubdetId::CSC;
 }
 
+bool is_rpc(unsigned int detid)
+{
+  DetId id(detid);
+  return id.subdetId() == MuonSubdetId::RPC;
+}
 }
 
 
@@ -56,6 +62,12 @@ SimHitMatcher::SimHitMatcher(const SimTrack& t, const SimVertex& v,
   cscSimHitInput_ = cscSimHit_.getParameter<edm::InputTag>("input");
   simMuOnlyCSC_ = cscSimHit_.getParameter<bool>("simMuOnly");
   discardEleHitsCSC_ = cscSimHit_.getParameter<bool>("discardEleHits");
+
+  auto rpcSimHit_= conf().getParameter<edm::ParameterSet>("rpcSimHit");
+  verboseRPC_ = rpcSimHit_.getParameter<int>("verbose");
+  rpcSimHitInput_ = rpcSimHit_.getParameter<edm::InputTag>("input");
+  simMuOnlyRPC_ = rpcSimHit_.getParameter<bool>("simMuOnly");
+  discardEleHitsRPC_ = rpcSimHit_.getParameter<bool>("discardEleHits");
 
   simInputLabel_ = conf().getUntrackedParameter<std::string>("simInputLabel", "g4SimHits");
 
@@ -83,17 +95,25 @@ SimHitMatcher::init()
   eventSetup().get<MuonGeometryRecord>().get(me0_g);
   me0_geo_ = &*me0_g;
 
+  edm::ESHandle<RPCGeometry> rpc_g;
+  eventSetup().get<MuonGeometryRecord>().get(rpc_g);
+  rpc_geo_ = &*rpc_g;
+
   edm::Handle<edm::PSimHitContainer> csc_hits;
   edm::Handle<edm::PSimHitContainer> gem_hits;
   edm::Handle<edm::PSimHitContainer> me0_hits;
+  edm::Handle<edm::PSimHitContainer> rpc_hits;
+
   edm::Handle<edm::SimTrackContainer> sim_tracks;
   edm::Handle<edm::SimVertexContainer> sim_vertices;
 
-  event().getByLabel(simInputLabel_, sim_tracks);
-  event().getByLabel(simInputLabel_, sim_vertices);
   event().getByLabel(edm::InputTag(simInputLabel_,"MuonCSCHits"), csc_hits);
   event().getByLabel(edm::InputTag(simInputLabel_,"MuonGEMHits"), gem_hits);
   event().getByLabel(edm::InputTag(simInputLabel_,"MuonME0Hits"), me0_hits);
+  event().getByLabel(edm::InputTag(simInputLabel_,"MuonRPCHits"), rpc_hits);
+
+  event().getByLabel(simInputLabel_, sim_tracks);
+  event().getByLabel(simInputLabel_, sim_vertices);
 
   // fill trkId2Index associoation:
   int no = 0;
@@ -222,6 +242,19 @@ SimHitMatcher::matchSimHitsToSimTrack(std::vector<unsigned int> track_ids,
       GEMDetId superch_id(p_id.region(), p_id.ring(), p_id.station(), 1, p_id.chamber(), 0);
       gem_superchamber_to_hits_[ superch_id() ].push_back(h);
     }
+    for (auto& h: gem_hits)
+    {
+      if (h.trackId() != track_id) continue;
+      int pdgid = h.particleType();
+      if (simMuOnlyRPC_ && std::abs(pdgid) != 13) continue;
+      // discard electron hits in the RPC chambers
+      if (discardEleHitsRPC_ && pdgid == 11) continue;
+
+      rpc_detid_to_hits_[ h.detUnitId() ].push_back(h);
+      rpc_hits_.push_back(h);
+      RPCDetId p_id( h.detUnitId() );
+      rpc_chamber_to_hits_[ p_id.chamberId().rawId() ].push_back(h);
+    }
   }
 
   // find pads with hits
@@ -289,6 +322,15 @@ SimHitMatcher::detIdsGEM() const
 
 
 std::set<unsigned int> 
+SimHitMatcher::detIdsRPC() const
+{
+  std::set<unsigned int> result;
+  for (auto& p: rpc_detid_to_hits_) result.insert(p.first);
+  return result;
+}
+
+
+std::set<unsigned int> 
 SimHitMatcher::detIdsME0() const
 {
   std::set<unsigned int> result;
@@ -347,6 +389,15 @@ SimHitMatcher::chamberIdsGEM() const
 {
   std::set<unsigned int> result;
   for (auto& p: gem_chamber_to_hits_) result.insert(p.first);
+  return result;
+}
+
+
+std::set<unsigned int> 
+SimHitMatcher::chamberIdsRPC() const
+{
+  std::set<unsigned int> result;
+  for (auto& p: rpc_chamber_to_hits_) result.insert(p.first);
   return result;
 }
 
@@ -427,6 +478,11 @@ SimHitMatcher::hitsInDetId(unsigned int detid) const
     if (csc_detid_to_hits_.find(detid) == csc_detid_to_hits_.end()) return no_hits_;
     return csc_detid_to_hits_.at(detid);
   }
+  if (is_rpc(detid))
+  {
+    if (rpc_detid_to_hits_.find(detid) == rpc_detid_to_hits_.end()) return no_hits_;
+    return rpc_detid_to_hits_.at(detid);
+  }
   return no_hits_;
 }
 
@@ -451,6 +507,12 @@ SimHitMatcher::hitsInChamber(unsigned int detid) const
     CSCDetId id(detid);
     if (csc_chamber_to_hits_.find(id.chamberId().rawId()) == gem_chamber_to_hits_.end()) return no_hits_;
     return csc_chamber_to_hits_.at(id.chamberId().rawId());
+  }
+  if (is_rpc(detid))
+  {
+    RPCDetId id(detid);
+    if (rpc_chamber_to_hits_.find(id.chamberId().rawId()) == gem_chamber_to_hits_.end()) return no_hits_;
+    return rpc_chamber_to_hits_.at(id.chamberId().rawId());
   }
   return no_hits_;
 }
@@ -493,6 +555,11 @@ SimHitMatcher::nLayersWithHitsInSuperChamber(unsigned int detid) const
       CSCDetId idd(h.detUnitId());
       layers_with_hits.insert(idd.layer());
     }
+    if (is_rpc(detid))
+    {
+      RPCDetId idd(h.detUnitId());
+      layers_with_hits.insert(idd.layer());
+    }
   }
   return layers_with_hits.size();
 }
@@ -521,6 +588,10 @@ SimHitMatcher::simHitsMeanPosition(const edm::PSimHitContainer& sim_hits) const
     else if (is_csc(h.detUnitId()))
     {
       gp = csc_geo_->idToDet(h.detUnitId())->surface().toGlobal(lp);
+    }
+    else if (is_rpc(h.detUnitId()))
+    {
+      gp = rpc_geo_->idToDet(h.detUnitId())->surface().toGlobal(lp);
     }
     else continue;
     sumx += gp.x();

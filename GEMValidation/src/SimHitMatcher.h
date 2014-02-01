@@ -22,6 +22,7 @@
 class CSCGeometry;
 class GEMGeometry;
 class ME0Geometry;
+class RPCGeometry;
 
 class SimHitMatcher : public BaseMatcher
 {
@@ -38,11 +39,15 @@ public:
   const edm::PSimHitContainer& simHitsME0() const {return gem_hits_;}
   /// access to all the CSC SimHits
   const edm::PSimHitContainer& simHitsCSC() const {return csc_hits_;}
+  /// access to all the RPC SimHits
+  const edm::PSimHitContainer& simHitsRPC() const {return rpc_hits_;}
 
   /// GEM partitions' detIds with SimHits
   std::set<unsigned int> detIdsGEM() const;
   /// ME0 partitions' detIds with SimHits
   std::set<unsigned int> detIdsME0() const;
+  /// RPC partitions' detIds with SimHits
+  std::set<unsigned int> detIdsRPC() const;
   /// CSC layers' detIds with SimHits
   /// by default, only returns those from ME1b
   std::set<unsigned int> detIdsCSC(int csc_type = CSC_ME1b) const;
@@ -50,7 +55,7 @@ public:
   /// GEM detid's with hits in 2 layers of coincidence pads
   /// those are layer==1 only detid's
   std::set<unsigned int> detIdsGEMCoincidences() const;
-  /// ME0 detid's with hits in 2 layers of coincidence pads
+  /// RPC detid's with hits in 2 layers of coincidence pads
   /// those are layer==1 only detid's
   std::set<unsigned int> detIdsME0Coincidences(int min_n_layers = 2) const;
 
@@ -58,6 +63,8 @@ public:
   std::set<unsigned int> chamberIdsGEM() const;
   /// ME0 chamber detIds with SimHits
   std::set<unsigned int> chamberIdsME0() const;
+  /// RPC chamber detIds with SimHits
+  std::set<unsigned int> chamberIdsRPC() const;
   /// CSC chamber detIds with SimHits
   std::set<unsigned int> chamberIdsCSC(int csc_type = CSC_ME1b) const;
 
@@ -118,14 +125,17 @@ private:
   bool simMuOnlyCSC_;
   bool simMuOnlyGEM_;
   bool simMuOnlyME0_;
+  bool simMuOnlyRPC_;
   bool discardEleHitsCSC_;
   bool discardEleHitsGEM_;
   bool discardEleHitsME0_;
+  bool discardEleHitsRPC_;
   std::string simInputLabel_;
 
   const CSCGeometry* csc_geo_;
   const GEMGeometry* gem_geo_;
   const ME0Geometry* me0_geo_;
+  const RPCGeometry* rpc_geo_;
 
   std::map<unsigned int, unsigned int> trkid_to_index_;
 
@@ -145,6 +155,10 @@ private:
   std::map<unsigned int, edm::PSimHitContainer > me0_chamber_to_hits_;
   std::map<unsigned int, edm::PSimHitContainer > me0_superchamber_to_hits_;
 
+  edm::PSimHitContainer rpc_hits_;
+  std::map<unsigned int, edm::PSimHitContainer > rpc_detid_to_hits_;
+  std::map<unsigned int, edm::PSimHitContainer > rpc_chamber_to_hits_;
+
   // detids with hits in pads
   std::map<unsigned int, std::set<int> > gem_detids_to_pads_;
   // detids with hits in 2-layer pad coincidences
@@ -153,9 +167,11 @@ private:
   bool verboseGEM_;
   bool verboseME0_;
   bool verboseCSC_;
+  bool verboseRPC_;
   edm::InputTag gemSimHitInput_;
   edm::InputTag me0SimHitInput_;
   edm::InputTag cscSimHitInput_;
+  edm::InputTag rpcSimHitInput_;
 };
 
 #endif
