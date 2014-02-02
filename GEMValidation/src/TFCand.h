@@ -3,7 +3,7 @@
 
 #include "GEMCode/GEMValidation/src/TFTrack.h"
 
-class TFCand : TFTrack
+class TFCand : public TFTrack
 {
  public:
   /// constructor

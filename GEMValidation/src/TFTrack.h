@@ -1,12 +1,18 @@
 #ifndef GEMValidation_TFTrack_h
 #define GEMValidation_TFTrack_h
 
+#include <vector>
+#include <tuple>
+#include <iostream>
+
+#include "GEMCode/GEMValidation/src/GenericDigi.h"
+#include "DataFormats/MuonDetId/interface/CSCDetId.h"
 /*
 #include "GEMCode/GEMValidation/src/BaseMatcher.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/L1Trigger/interface/L1MuonParticleFwd.h"
 #include "DataFormats/L1Trigger/interface/L1MuonParticle.h"
-#include "DataFormats/MuonDetId/interface/CSCDetId.h"
+ 
 #include "DataFormats/Math/interface/normalizedPhi.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "DataFormats/Math/interface/deltaR.h"
@@ -95,12 +101,8 @@
 #include "CondFormats/L1TObjects/interface/L1MuTriggerScales.h"
 #include "CondFormats/L1TObjects/interface/L1MuTriggerPtScale.h"
 
-#include "GEMCode/GEMValidation/src/GenericDigi.h"
 
 
-#include <vector>
-#include <tuple>
-#include <iostream>
 
 */
 

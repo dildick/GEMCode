@@ -1,7 +1,9 @@
 #ifndef GEMValidation_GMTRegCand_h
 #define GEMValidation_GMTRegCand_h
 
-class GMTRegCand : TFCand
+#include "GEMCode/GEMValidation/src/TFCand.h"
+
+class GMTRegCand : public TFCand
 {
  public:
   /// constructor
