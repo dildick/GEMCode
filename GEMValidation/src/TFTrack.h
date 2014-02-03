@@ -1,17 +1,35 @@
 #ifndef GEMValidation_TFTrack_h
 #define GEMValidation_TFTrack_h
 
+// system include files
+#include <memory>
+#include <cmath>
 #include <vector>
 #include <tuple>
 #include <iostream>
 
+// user include files
 #include "GEMCode/GEMValidation/src/GenericDigi.h"
-#include "DataFormats/MuonDetId/interface/CSCDetId.h"
-/*
 #include "GEMCode/GEMValidation/src/BaseMatcher.h"
-#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+
+#include "DataFormats/MuonDetId/interface/CSCDetId.h"
+
 #include "DataFormats/L1Trigger/interface/L1MuonParticleFwd.h"
 #include "DataFormats/L1Trigger/interface/L1MuonParticle.h"
+#include "L1Trigger/CSCTrackFinder/interface/CSCTFSectorProcessor.h"
+#include "L1Trigger/CSCTrackFinder/interface/CSCSectorReceiverLUT.h"
+#include "L1Trigger/CSCTrackFinder/interface/CSCTrackFinderDataTypes.h"
+//#include <L1Trigger/CSCTrackFinder/src/CSCTFDTReceiver.h>
+#include "DataFormats/L1CSCTrackFinder/interface/L1CSCTrackCollection.h"
+
+#include <DataFormats/CSCDigi/interface/CSCALCTDigiCollection.h>
+#include <DataFormats/CSCDigi/interface/CSCCLCTDigiCollection.h>
+#include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h"
+#include <DataFormats/CSCDigi/interface/CSCWireDigiCollection.h>
+#include <DataFormats/CSCDigi/interface/CSCComparatorDigiCollection.h>
+
+/*
+#include "DataFormats/HepMCCandidate/interface/GenParticle.h"
  
 #include "DataFormats/Math/interface/normalizedPhi.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
@@ -24,10 +42,6 @@
 
 #include <L1Trigger/CSCCommonTrigger/interface/CSCConstants.h>
 #include "L1Trigger/CSCCommonTrigger/interface/CSCTriggerGeometry.h"
-#include "L1Trigger/CSCTrackFinder/interface/CSCTFSectorProcessor.h"
-#include "L1Trigger/CSCTrackFinder/interface/CSCSectorReceiverLUT.h"
-#include "L1Trigger/CSCTrackFinder/interface/CSCTrackFinderDataTypes.h"
-#include <L1Trigger/CSCTrackFinder/src/CSCTFDTReceiver.h>
 
 #include "RecoMuon/DetLayers/interface/MuonDetLayerGeometry.h"
 #include "RecoMuon/Records/interface/MuonRecoGeometryRecord.h"
@@ -41,11 +55,7 @@
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
 
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-// system include files
-#include <memory>
-#include <cmath>
 
-// user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 
@@ -57,10 +67,6 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
-
-#include "TH1.h"
-#include "TH2.h"
-#include "TTree.h"
 
 //#include "TLorentzVector.h"
 //#include "DataFormats/Math/interface/LorentzVector.h"
@@ -78,11 +84,6 @@
 
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
 //#include <DataFormats/L1CSCTrackFinder/interface/CSCTFConstants.h>
-#include <DataFormats/CSCDigi/interface/CSCALCTDigiCollection.h>
-#include <DataFormats/CSCDigi/interface/CSCCLCTDigiCollection.h>
-#include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h"
-#include <DataFormats/CSCDigi/interface/CSCWireDigiCollection.h>
-#include <DataFormats/CSCDigi/interface/CSCComparatorDigiCollection.h>
 
 #include <DataFormats/L1DTTrackFinder/interface/L1MuDTChambPhContainer.h>
 #include "DataFormats/L1CSCTrackFinder/interface/L1CSCTrackCollection.h"
@@ -100,10 +101,6 @@
 
 #include "CondFormats/L1TObjects/interface/L1MuTriggerScales.h"
 #include "CondFormats/L1TObjects/interface/L1MuTriggerPtScale.h"
-
-
-
-
 */
 
 class TFTrack
@@ -116,18 +113,17 @@ class TFTrack
   /// destructor
   ~TFTrack();  
 
-  /*
   /// L1 track
-  //  const csc::L1Track* getL1Track() const {return l1track_;}
+  const csc::L1Track* getL1Track() const {return l1track_;}
   /// collection of trigger digis
   const std::vector<const CSCCorrelatedLCTDigi* >& getTriggerDigis() const {return triggerDigis_;} 
   /// collection of MPC LCTs
   const std::vector<CSCDetId>& getTriggerDigisIds() const {return triggerIds_;}
   const std::vector<std::pair<float, float>>& getTriggerEtaPhis() {return triggerEtaPhis_;}
   const std::vector<csctf::TrackStub>& getTriggerStubs() const {return triggerStubs_;}
-  const std::vector<Digi*>& getTriggerMPLCTs() const {return mplcts_;}
+  const std::vector<matching::Digi*>& getTriggerMPLCTs() const {return mplcts_;}
   const std::vector<CSCDetId>& getChamberIds() const {return ids_;}
-  
+
   /// track sign
   bool sign() const {return l1track_->sign();}
   /// bunch crossing 
@@ -140,7 +136,7 @@ class TFTrack
   bool hasStubBarrel(int wheel);  
   /// has stub in muon endcap?
   bool hasStubEndcap(int station);
-  ///   
+  /// bending angles
   //  unsigned dPhi12() const { return 1*(l1trk->ptLUTAddress() & 0xFF);}
   //  unsigned dPhi23() const { return 1*( (l1trk->ptLUTAddress() & 0xF00)>>8 );}
   unsigned ptPacked() const {return pt_packed_;}
@@ -153,16 +149,14 @@ class TFTrack
   double dr() const {return dr_;}
   std::vector<bool> deltaOk();
   bool debug() const {return debug_;}
-  */
 
  private:
-  /*
   const csc::L1Track* l1track_;
   std::vector<const CSCCorrelatedLCTDigi*> triggerDigis_;
   std::vector<CSCDetId> triggerIds_;
   std::vector<std::pair<float, float>> triggerEtaPhis_;
   std::vector<csctf::TrackStub> triggerStubs_;
-  std::vector<Digi*> mplcts_;
+  std::vector<matching::Digi*> mplcts_;
   std::vector<CSCDetId> ids_; // chamber ids
   unsigned phi_packed_;
   unsigned eta_packed_;
@@ -174,7 +168,6 @@ class TFTrack
   double dr_;
   std::vector<bool> deltaOk_;
   bool debug_;
-  */
 };
 
 #endif
