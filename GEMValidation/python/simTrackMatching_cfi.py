@@ -39,6 +39,13 @@ SimTrackMatching = cms.PSet(
         simMuOnly = cms.bool(True),
         discardEleHits = cms.bool(True),
     ),
+    me0Digi = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag("simMuonME0Digis"),
+        minBX = cms.int32(-1),
+        maxBX = cms.int32(1),
+        matchDeltaStrip = cms.int32(1),
+    ),
     ## GEM
     gemSimHit = cms.PSet(
         verbose = cms.int32(0),
