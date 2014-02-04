@@ -143,7 +143,7 @@ SimTrackMatching = cms.PSet(
         verbose = cms.int32(0),
         input = cms.InputTag("simCsctfDigis", "CSC"),
    ),
-    ## GMTCand
+    ## GMTCand and GMTRegCand
     gmtCand = cms.PSet(
         verbose = cms.int32(0),
         input = cms.InputTag("simGmtDigis"),   

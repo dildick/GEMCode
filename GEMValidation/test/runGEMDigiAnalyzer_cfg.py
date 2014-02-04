@@ -21,12 +21,17 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:upgrade2019', '')
 
 # the analyzer configuration
 process.load('GEMCode.GEMValidation.GEMDigiAnalyzer_cfi')
-process.GEMDigiAnalyzer.simTrackMatching.cscComparatorDigiInput = ""
-process.GEMDigiAnalyzer.simTrackMatching.cscWireDigiInput = ""
-process.GEMDigiAnalyzer.simTrackMatching.cscCLCTInput = ""
-process.GEMDigiAnalyzer.simTrackMatching.cscALCTInput = ""
-process.GEMDigiAnalyzer.simTrackMatching.cscLCTInput = ""
-process.GEMDigiAnalyzer.simTrackMatching.gemRecHitInput = ""
+process.GEMDigiAnalyzer.simTrackMatching.cscComparatorDigi.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.cscWireDigi.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.cscCLCT.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.cscALCT.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.cscLCT.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.cscMPLCT.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.tfTrack.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.tfCand.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.gmtCand.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.l1Extra.input = ""
+process.GEMDigiAnalyzer.simTrackMatching.gemRecHit.input = ""
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
