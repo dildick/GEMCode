@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 SimTrackMatching = cms.PSet(
     # common
-    useCSCChamberTypes = cms.untracked.vint32(0,1,2),
+    useCSCChamberTypes = cms.untracked.vint32(0,1,2,3,4),
     ntupleTrackChamberDelta = cms.bool(True),
     ntupleTrackEff = cms.bool(True),
     overrideminNHitsChamber = cms.bool(False),
@@ -18,6 +18,35 @@ SimTrackMatching = cms.PSet(
         requireVertex = cms.bool(True),
         requireGenPart = cms.bool(True),
     ),
+    ## RPC
+    rpcSimHit = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag('g4SimHits','MuonRPCHits'),
+        simMuOnly = cms.bool(True),
+        discardEleHits = cms.bool(True),
+    ),
+    rpcDigi = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag("simMuonRPCDigis"),
+        minBX = cms.int32(-1),
+        maxBX = cms.int32(1),
+        matchDeltaStrip = cms.int32(1),
+    ),
+    ## ME0
+    me0SimHit = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag('g4SimHits','MuonME0Hits'),
+        simMuOnly = cms.bool(True),
+        discardEleHits = cms.bool(True),
+    ),
+    me0Digi = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag("simMuonME0Digis"),
+        minBX = cms.int32(-1),
+        maxBX = cms.int32(1),
+        matchDeltaStrip = cms.int32(1),
+    ),
+    ## GEM
     gemSimHit = cms.PSet(
         verbose = cms.int32(0),
         input = cms.InputTag('g4SimHits','MuonGEMHits'),
@@ -50,6 +79,7 @@ SimTrackMatching = cms.PSet(
         maxBX = cms.int32(1),
         matchDeltaStrip = cms.int32(1),
     ),
+    ## CSC
     cscSimHit = cms.PSet(
         verbose = cms.int32(0),
         input = cms.InputTag('g4SimHits','MuonCSCHits'),
@@ -97,10 +127,30 @@ SimTrackMatching = cms.PSet(
     ),
     cscMPLCT = cms.PSet(
         verbose = cms.int32(0),
-        input = cms.InputTag("simCscTriggerPrimitiveDigis"),
+        input = cms.InputTag("simCscTriggerPrimitiveDigis", "MPCSORTED"),
         minBX = cms.int32(3),
         maxBX = cms.int32(8),
         minNHitsChamber = cms.int32(4),
         addGhosts = cms.bool(True),
+    ),
+    ## TFTrack
+    tfTrack = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag("simCsctfTrackDigis"),
+    ),
+    ## CSC TFTracks
+    tfCand = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag("simCsctfDigis", "CSC"),
+   ),
+    ## GMTCand and GMTRegCand
+    gmtCand = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag("simGmtDigis"),   
+    ),
+    ## L1Extra
+    l1Extra = cms.PSet(
+        verbose = cms.int32(0),
+        input = cms.InputTag("l1extraParticles"),
     ),
 )

@@ -26,12 +26,18 @@ process.load('GEMCode.GEMValidation.GEMSimHitAnalyzer_cfi')
 process.GEMSimHitAnalyzer.simTrackMatching.gemDigi.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.gemPadDigi.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.gemCoPadDigi.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.gemRecHit.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.me0Digi.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.cscComparatorDigi.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.cscWireDigi.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.cscCLCT.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.cscALCT.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.cscLCT.input = ""
-process.GEMSimHitAnalyzer.simTrackMatching.gemRecHit.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.cscMPLCT.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.tfTrack.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.tfCand.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.gmtCand.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.l1Extra.input = ""
  
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
