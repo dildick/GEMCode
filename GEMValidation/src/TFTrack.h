@@ -86,17 +86,6 @@
 /* #include "TrackingTools/GeomPropagators/interface/Propagator.h" */
 /* #include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h" */
 
-
-/* #include "DataFormats/MuonDetId/interface/CSCDetId.h" */
-/* //#include <DataFormats/L1CSCTrackFinder/interface/CSCTFConstants.h> */
-/* #include <DataFormats/CSCDigi/interface/CSCALCTDigiCollection.h> */
-/* #include <DataFormats/CSCDigi/interface/CSCCLCTDigiCollection.h> */
-/* #include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h" */
-/* #include <DataFormats/CSCDigi/interface/CSCWireDigiCollection.h> */
-/* #include <DataFormats/CSCDigi/interface/CSCComparatorDigiCollection.h> */
-#include "DataFormats/MuonDetId/interface/CSCDetId.h"
-//#include <DataFormats/L1CSCTrackFinder/interface/CSCTFConstants.h>
-
 /* #include <DataFormats/L1DTTrackFinder/interface/L1MuDTChambPhContainer.h> */
 /* #include "DataFormats/L1CSCTrackFinder/interface/L1CSCTrackCollection.h" */
 
@@ -118,12 +107,16 @@ class TFTrack
 {
  public:
   /// constructor
-  TFTrack();
+  TFTrack(const csc::L1Track *t);
   /// copy constructor
   TFTrack(const TFTrack&);
   /// destructor
   ~TFTrack();  
 
+  void init(CSCTFPtLUT*,
+	    edm::ESHandle< L1MuTriggerScales > &muScales,
+	    edm::ESHandle< L1MuTriggerPtScale > &muPtScale);
+  
   /// L1 track
   const csc::L1Track* getL1Track() const {return l1track_;}
   /// collection of trigger digis
@@ -140,16 +133,28 @@ class TFTrack
   /// bunch crossing 
   int bx() const {return l1track_->bx();}
   /// how many stubs?
-  int nStubs(int station);
+  unsigned int nStubs(bool mb1, bool me1, bool me2, bool me3, bool me4);
+  /// how many stubs in CSC? 
+  unsigned int nStubsCSCOk(bool me1, bool me2, bool me3, bool me4);
   /// has stub in muon barrel/endcap
   bool hasStubStation(int wheel);  
   /// has stub in muon barrel?
-  bool hasStubBarrel(int wheel);  
+  bool hasStubBarrel();  
   /// has stub in muon endcap?
   bool hasStubEndcap(int station);
+  /// matches CSC stubs?
+  bool hasStubCSCOk(int st);
+  /// has stubs that pass match?
+  bool passStubsMatch(double eta, int minLowHStubs, int minMidHStubs, int minHighHStubs);
+  /// print some information
+  void print();
+
+
+
   /// bending angles
-  //  unsigned dPhi12() const { return 1*(l1trk->ptLUTAddress() & 0xFF);}
-  //  unsigned dPhi23() const { return 1*( (l1trk->ptLUTAddress() & 0xF00)>>8 );}
+  unsigned dPhi12() const { return 1*(l1track_->ptLUTAddress() & 0xFF);}
+  unsigned dPhi23() const { return 1*((l1track_->ptLUTAddress() & 0xF00)>>8);}
+
   unsigned ptPacked() const {return pt_packed_;}
   unsigned etaPacked() const {return eta_packed_;}
   unsigned phiPacked() const {return phi_packed_;}
