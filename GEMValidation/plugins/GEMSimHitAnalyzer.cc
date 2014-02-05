@@ -618,7 +618,7 @@ bool GEMSimHitAnalyzer::isSimTrackGood(const SimTrack &t)
   if (std::abs(t.type()) != 13) return false; // only interested in direct muon simtracks
   if (t.momentum().pt() < minPt_) return false;
   const float eta(std::abs(t.momentum().eta()));
-  if (eta > 2.18 || eta < 1.55) return false; // no GEMs could be in such eta
+  if (eta > 4.0 || eta < 1.45) return false; // no GEMs could be in such eta
   return true;
 }
 

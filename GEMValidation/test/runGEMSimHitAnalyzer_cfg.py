@@ -6,9 +6,7 @@ process = cms.Process("GEMSIMANA")
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
-#process.load('Configuration.Geometry.GeometryExtended2019Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2023HGCalReco_cff')
-process.load('Configuration.Geometry.GeometryExtended2023HGCal_cff')
+process.load('Configuration.Geometry.GeometryExtended2019Reco_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_PostLS1_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
@@ -24,11 +22,11 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:upgrade2019', '')
 # the analyzer configuration
 process.load('GEMCode.GEMValidation.GEMSimHitAnalyzer_cfi')
 process.GEMSimHitAnalyzer.simTrackMatching.gemDigi.input = ""
-process.GEMSimHitAnalyzer.simTrackMatching.gemPadDigi.input = ""
-process.GEMSimHitAnalyzer.simTrackMatching.gemCoPadDigi.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.gemPad.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.gemCoPad.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.gemRecHit.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.me0Digi.input = ""
-process.GEMSimHitAnalyzer.simTrackMatching.cscComparatorDigi.input = ""
+process.GEMSimHitAnalyzer.simTrackMatching.cscStripDigi.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.cscWireDigi.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.cscCLCT.input = ""
 process.GEMSimHitAnalyzer.simTrackMatching.cscALCT.input = ""
