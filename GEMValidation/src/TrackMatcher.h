@@ -26,14 +26,15 @@ class TrackMatcher// : public CSCStubMatcher
   ~TrackMatcher();
 
   const std::vector<TFTrack*>& tfTracks() const {return tfTracks_;}
-  TFTrack* bestTFTrack(bool sortPtFirst=1);
   const std::vector<TFCand*>& tfCands() const {return tfCands_;}
-  TFCand* bestTFCand(bool sortPtFirst=1);
   const std::vector<GMTRegCand*>& gmtRegCands() const {return gmtRegCands_;}
-  GMTRegCand* bestGmtRegcand(bool sortPtFirst=1);
   const std::vector<GMTCand*>& gmtCands() const {return gmtCands_;}
-  GMTCand* bestGmtcand(bool sortPtFirst=1);
   const std::vector<L1Extra*>& l1Extras() const {return l1Extras_;}
+
+  TFTrack* bestTFTrack(bool sortPtFirst=1);
+  TFCand* bestTFCand(bool sortPtFirst=1);
+  GMTRegCand* bestGMTRegCand(bool sortPtFirst=1);
+  GMTCand* bestGMTCand(bool sortPtFirst=1);
   L1Extra* bestL1Extra(bool sortPtFirst=1);
   
  private:
