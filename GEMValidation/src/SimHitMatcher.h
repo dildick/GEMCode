@@ -137,6 +137,11 @@ private:
   const ME0Geometry* me0_geo_;
   const RPCGeometry* rpc_geo_;
 
+  bool hasGEMGeometry_;
+  bool hasRPCGeometry_;
+  bool hasME0Geometry_;
+  bool hasCSCGeometry_;
+
   std::map<unsigned int, unsigned int> trkid_to_index_;
 
   edm::PSimHitContainer no_hits_;

@@ -1,6 +1,8 @@
 #include "GEMCode/GEMValidation/src/SimHitMatcher.h"
 
 #include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/Frameworkfwd.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 #include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
@@ -84,20 +86,45 @@ void
 SimHitMatcher::init()
 {
   edm::ESHandle<CSCGeometry> csc_g;
-  eventSetup().get<MuonGeometryRecord>().get(csc_g);
-  csc_geo_ = &*csc_g;
-
   edm::ESHandle<GEMGeometry> gem_g;
-  eventSetup().get<MuonGeometryRecord>().get(gem_g);
-  gem_geo_ = &*gem_g;
-
   edm::ESHandle<ME0Geometry> me0_g;
-  eventSetup().get<MuonGeometryRecord>().get(me0_g);
-  me0_geo_ = &*me0_g;
-
   edm::ESHandle<RPCGeometry> rpc_g;
-  eventSetup().get<MuonGeometryRecord>().get(rpc_g);
-  rpc_geo_ = &*rpc_g;
+
+  try {
+    eventSetup().get<MuonGeometryRecord>().get(gem_g);
+    gem_geo_ = &*gem_g;
+  } catch (edm::eventsetup::NoProxyException<GEMGeometry>& e) {
+    hasGEMGeometry_ = false;
+    edm::LogWarning("SimHitMatcher") 
+      << "+++ Info: GEM geometry is unavailable. +++\n";
+  }
+
+  try {
+    eventSetup().get<MuonGeometryRecord>().get(me0_g);
+    me0_geo_ = &*me0_g;
+  } catch (edm::eventsetup::NoProxyException<ME0Geometry>& e) {
+    hasME0Geometry_ = false;
+    edm::LogWarning("SimHitMatcher") 
+      << "+++ Info: ME0 geometry is unavailable. +++\n";
+  }
+
+  try {
+    eventSetup().get<MuonGeometryRecord>().get(csc_g);
+    csc_geo_ = &*csc_g;
+  } catch (edm::eventsetup::NoProxyException<CSCGeometry>& e) {
+    hasCSCGeometry_ = false;
+    edm::LogWarning("SimHitMatcher") 
+      << "+++ Info: CSC geometry is unavailable. +++\n";
+  }
+
+  try {
+    eventSetup().get<MuonGeometryRecord>().get(rpc_g);
+    rpc_geo_ = &*rpc_g;
+  } catch (edm::eventsetup::NoProxyException<RPCGeometry>& e) {
+    hasRPCGeometry_ = false;
+    edm::LogWarning("SimHitMatcher") 
+      << "+++ Info: RPC geometry is unavailable. +++\n";
+  }
 
   edm::Handle<edm::PSimHitContainer> csc_hits;
   edm::Handle<edm::PSimHitContainer> gem_hits;

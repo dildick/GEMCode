@@ -281,8 +281,8 @@ void GEMSimHitAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup&
   iEvent.getByLabel(edm::InputTag(simInputLabel_,"MuonCSCHits"), CSCHits);
   if(hasCSCGeometry_ and CSCHits->size()) analyzeCSC( iEvent );
   
-  iEvent.getByLabel(edm::InputTag(simInputLabel_,"MuonRPCHits"), RPCHits);
-  if(hasRPCGeometry_ and RPCHits->size()) analyzeRPC( iEvent );
+//   iEvent.getByLabel(edm::InputTag(simInputLabel_,"MuonRPCHits"), RPCHits);
+//   if(hasRPCGeometry_ and RPCHits->size()) analyzeRPC( iEvent );
 }
 
 void GEMSimHitAnalyzer::bookCSCSimHitsTree()
